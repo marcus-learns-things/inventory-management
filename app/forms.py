@@ -9,3 +9,9 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
+
+class InventoryItemForm(FlaskForm):
+    name = StringField('ItemName', validators=[DataRequired()])
+    quantity = StringField('Quantity', validators=[DataRequired()])
+    price = StringField('Price', validators=[DataRequired()])
+    submit = SubmitField('Add Item')
