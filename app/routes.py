@@ -19,7 +19,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
-@app.route("/item/new", methods=['GET', 'POST'])
+@app.route("/create_item", methods=['GET', 'POST'])
 def new_item():
     form = InventoryItemForm()
     if form.validate_on_submit():
@@ -28,9 +28,10 @@ def new_item():
         db.session.commit()
         flash('Your item has been added to Inventory', 'success')
         return redirect(url_for('inventory'))
-    return render_template('create_item.html', form=form)
+    return render_template('create_item.html', title='Create Item', form=form)
 
 @app.route("/inventory")
 def inventory():
     items = InventoryItem.query.all()
-    return render_template('inventory.html', items=items)
+    return render_template('inventory.html', title='Inventory', items=items)
+

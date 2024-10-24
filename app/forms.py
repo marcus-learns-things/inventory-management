@@ -15,3 +15,7 @@ class InventoryItemForm(FlaskForm):
     quantity = StringField('Quantity', validators=[DataRequired()])
     price = StringField('Price', validators=[DataRequired()])
     submit = SubmitField('Add Item')
+    item_name = StringField('ItemName', validators=[DataRequired()])
+    item_price = StringField('ItemPrice', validators=[DataRequired()])
+    submit = SubmitField('Add Item')
+
