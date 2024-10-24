@@ -1,27 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
-</head>
-<body>
-    <h1>Inventory List</h1>
-    <table>
-        <thead>
+{% extends "base.html" %}
+{% block title %}Inventory{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Inventory Items</h1>
+    </div>
+    <div class="col text-end">
+        <a href="{{ url_for('new_item') }}" class="btn btn-success">Add New Item</a>
+    </div>
+</div>
+
+{% if items %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-dark">
             <tr>
-                <th>Item Name</th>
+                <th>Name</th>
+                <th>Quantity</th>
                 <th>Price</th>
+                <th>Total Value</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for item in items %}
             <tr>
-                <td>{{ item.item_name }}</td>
-                <td>{{ item.item_price }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ "%.2f"|format(item.price) }}</td>
+                <td>${{ "%.2f"|format(item.quantity * item.price) }}</td>
+                <td>
+                    <a href="{{ url_for('update_item', item_id=item.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.id }}">
+                        Delete
+                    </button>
+                </td>
             </tr>
+
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Delete</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete "{{ item.name }}"?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form action="{{ url_for('delete_item', item_id=item.id) }}" method="POST" class="d-inline">
+                                <input type="submit" class="btn btn-danger" value="Delete">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+</div>
+{% else %}
+<div class="alert alert-info">
+    No items in inventory. <a href="{{ url_for('new_item') }}">Add some items</a> to get started.
+</div>
+{% endif %}
+{% endblock %}

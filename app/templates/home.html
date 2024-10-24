@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="text-center my-5">
+    <h1 class="display-4">Welcome to Inventory Management System</h1>
+    <p class="lead">Manage your inventory efficiently and effectively.</p>
+    {% if not current_user.is_authenticated %}
+    <div class="mt-4">
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg mx-2">Register</a>
+        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg mx-2">Login</a>
+    </div>
+    {% else %}
+    <div class="mt-4">
+        <a href="{{ url_for('inventory') }}" class="btn btn-primary btn-lg mx-2">View Inventory</a>
+        <a href="{{ url_for('new_item') }}" class="btn btn-success btn-lg mx-2">Add New Item</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

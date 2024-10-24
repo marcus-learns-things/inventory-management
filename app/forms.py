@@ -1,21 +1,32 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, length
+from wtforms import StringField, PasswordField, SubmitField, FloatField, IntegerField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from app.models import User
 
-# User Registration form with simple validation of data input using wtforms.
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), length(min=2, max=20)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
-class InventoryItemForm(FlaskForm):
-    name = StringField('ItemName', validators=[DataRequired()])
-    quantity = StringField('Quantity', validators=[DataRequired()])
-    price = StringField('Price', validators=[DataRequired()])
-    submit = SubmitField('Add Item')
-    item_name = StringField('ItemName', validators=[DataRequired()])
-    item_price = StringField('ItemPrice', validators=[DataRequired()])
-    submit = SubmitField('Add Item')
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('Username already taken. Please choose another one.')
 
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('Email already registered. Please use another one.')
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
+
+class InventoryItemForm(FlaskForm):
+    name = StringField('Item Name', validators=[DataRequired(), Length(min=1, max=100)])
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
+    price = FloatField('Price', validators=[DataRequired()])
+    submit = SubmitField('Save Item')
